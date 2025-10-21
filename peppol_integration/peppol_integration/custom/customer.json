@@ -1,0 +1,96 @@
+{
+ "custom_fields": [
+  {
+   "dt": "Customer",
+   "fieldname": "peppol_section",
+   "fieldtype": "Section Break",
+   "label": "Peppol Information",
+   "insert_after": "tax_id",
+   "is_system_generated": 1,
+   "collapsible": 1,
+   "module": "Peppol Integration"
+  },
+  {
+   "dt": "Customer",
+   "fieldname": "peppol_enabled",
+   "fieldtype": "Check",
+   "label": "Send Invoices via Peppol",
+   "insert_after": "peppol_section",
+   "is_system_generated": 1,
+   "default": "0",
+   "description": "Enable Peppol e-invoicing for this customer",
+   "module": "Peppol Integration"
+  },
+  {
+   "dt": "Customer",
+   "fieldname": "peppol_scheme",
+   "fieldtype": "Select",
+   "label": "Peppol Scheme",
+   "insert_after": "peppol_enabled",
+   "is_system_generated": 1,
+   "options": "0208\n0007\n9925\n9956\n0088\n0184",
+   "default": "0208",
+   "depends_on": "eval:doc.peppol_enabled",
+   "mandatory_depends_on": "eval:doc.peppol_enabled",
+   "description": "0208: BE, 0007: SE, 9925: FR SIRET, 9956: BE CBE, 0088: GLN, 0184: DK CVR",
+   "module": "Peppol Integration"
+  },
+  {
+   "dt": "Customer",
+   "fieldname": "peppol_participant_id",
+   "fieldtype": "Data",
+   "label": "Peppol Participant ID",
+   "insert_after": "peppol_scheme",
+   "is_system_generated": 1,
+   "depends_on": "eval:doc.peppol_enabled",
+   "mandatory_depends_on": "eval:doc.peppol_enabled",
+   "description": "Customer's Peppol ID (without scheme prefix, e.g., '0987654321')",
+   "module": "Peppol Integration"
+  },
+  {
+   "dt": "Customer",
+   "fieldname": "peppol_column_break",
+   "fieldtype": "Column Break",
+   "insert_after": "peppol_participant_id",
+   "is_system_generated": 1,
+   "module": "Peppol Integration"
+  },
+  {
+   "dt": "Customer",
+   "fieldname": "peppol_verified",
+   "fieldtype": "Check",
+   "label": "Peppol ID Verified",
+   "insert_after": "peppol_column_break",
+   "is_system_generated": 1,
+   "read_only": 1,
+   "default": "0",
+   "description": "Whether the Peppol ID has been verified with the network",
+   "module": "Peppol Integration"
+  },
+  {
+   "dt": "Customer",
+   "fieldname": "peppol_last_verified",
+   "fieldtype": "Date",
+   "label": "Last Verified",
+   "insert_after": "peppol_verified",
+   "is_system_generated": 1,
+   "read_only": 1,
+   "module": "Peppol Integration"
+  },
+  {
+   "dt": "Customer",
+   "fieldname": "peppol_verification_status",
+   "fieldtype": "Data",
+   "label": "Verification Status",
+   "insert_after": "peppol_last_verified",
+   "is_system_generated": 1,
+   "read_only": 1,
+   "module": "Peppol Integration"
+  }
+ ],
+ "custom_perms": [],
+ "doctype": "Customer",
+ "links": [],
+ "property_setters": [],
+ "sync_on_migrate": 1
+}
