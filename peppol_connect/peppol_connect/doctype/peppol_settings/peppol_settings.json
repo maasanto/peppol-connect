@@ -25,7 +25,7 @@
    "default": "0",
    "fieldname": "enabled",
    "fieldtype": "Check",
-   "label": "Enable Peppol Integration"
+   "label": "Enable Peppol Connect"
   },
   {
    "fieldname": "column_break_1",
@@ -109,7 +109,7 @@
  "links": [],
  "modified": "2025-10-21 13:49:38.266643",
  "modified_by": "Administrator",
- "module": "Peppol Integration",
+ "module": "Peppol Connect",
  "name": "Peppol Settings",
  "owner": "Administrator",
  "permissions": [

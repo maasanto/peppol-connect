@@ -1,5 +1,5 @@
-app_name = "peppol_integration"
-app_title = "Peppol Integration"
+app_name = "peppol_connect"
+app_title = "Peppol Connect"
 app_publisher = "Antoine Maas"
 app_description = "Connect ERPNext to a third-party provider to send and receive e-invoices on the peppol network"
 app_email = "antoine.maas@amingenierie-opensource.fr"
@@ -13,11 +13,11 @@ app_license = "gpl-3.0"
 # Each item in the list will be shown as an app in the apps page
 # add_to_apps_screen = [
 # 	{
-# 		"name": "peppol_integration",
-# 		"logo": "/assets/peppol_integration/logo.png",
-# 		"title": "Peppol Integration",
-# 		"route": "/peppol_integration",
-# 		"has_permission": "peppol_integration.api.permission.has_app_permission"
+# 		"name": "peppol_connect",
+# 		"logo": "/assets/peppol_connect/logo.png",
+# 		"title": "Peppol Connect",
+# 		"route": "/peppol_connect",
+# 		"has_permission": "peppol_connect.api.permission.has_app_permission"
 # 	}
 # ]
 
@@ -25,15 +25,15 @@ app_license = "gpl-3.0"
 # ------------------
 
 # include js, css files in header of desk.html
-# app_include_css = "/assets/peppol_integration/css/peppol_integration.css"
-# app_include_js = "/assets/peppol_integration/js/peppol_integration.js"
+# app_include_css = "/assets/peppol_connect/css/peppol_connect.css"
+# app_include_js = "/assets/peppol_connect/js/peppol_connect.js"
 
 # include js, css files in header of web template
-# web_include_css = "/assets/peppol_integration/css/peppol_integration.css"
-# web_include_js = "/assets/peppol_integration/js/peppol_integration.js"
+# web_include_css = "/assets/peppol_connect/css/peppol_connect.css"
+# web_include_js = "/assets/peppol_connect/js/peppol_connect.js"
 
 # include custom scss in every website theme (without file extension ".scss")
-# website_theme_scss = "peppol_integration/public/scss/website"
+# website_theme_scss = "peppol_connect/public/scss/website"
 
 # include js, css files in header of web form
 # webform_include_js = {"doctype": "public/js/doctype.js"}
@@ -52,7 +52,7 @@ app_license = "gpl-3.0"
 # Svg Icons
 # ------------------
 # include app icons in desk
-# app_include_icons = "peppol_integration/public/icons.svg"
+# app_include_icons = "peppol_connect/public/icons.svg"
 
 # Home Pages
 # ----------
@@ -79,43 +79,43 @@ app_license = "gpl-3.0"
 
 # add methods and filters to jinja environment
 # jinja = {
-# 	"methods": "peppol_integration.utils.jinja_methods",
-# 	"filters": "peppol_integration.utils.jinja_filters"
+# 	"methods": "peppol_connect.utils.jinja_methods",
+# 	"filters": "peppol_connect.utils.jinja_filters"
 # }
 
 # Installation
 # ------------
 
-# before_install = "peppol_integration.install.before_install"
-# after_install = "peppol_integration.install.after_install"
+# before_install = "peppol_connect.install.before_install"
+# after_install = "peppol_connect.install.after_install"
 
 # Uninstallation
 # ------------
 
-# before_uninstall = "peppol_integration.uninstall.before_uninstall"
-# after_uninstall = "peppol_integration.uninstall.after_uninstall"
+# before_uninstall = "peppol_connect.uninstall.before_uninstall"
+# after_uninstall = "peppol_connect.uninstall.after_uninstall"
 
 # Integration Setup
 # ------------------
 # To set up dependencies/integrations with other apps
 # Name of the app being installed is passed as an argument
 
-# before_app_install = "peppol_integration.utils.before_app_install"
-# after_app_install = "peppol_integration.utils.after_app_install"
+# before_app_install = "peppol_connect.utils.before_app_install"
+# after_app_install = "peppol_connect.utils.after_app_install"
 
 # Integration Cleanup
 # -------------------
 # To clean up dependencies/integrations with other apps
 # Name of the app being uninstalled is passed as an argument
 
-# before_app_uninstall = "peppol_integration.utils.before_app_uninstall"
-# after_app_uninstall = "peppol_integration.utils.after_app_uninstall"
+# before_app_uninstall = "peppol_connect.utils.before_app_uninstall"
+# after_app_uninstall = "peppol_connect.utils.after_app_uninstall"
 
 # Desk Notifications
 # ------------------
 # See frappe.core.notifications.get_notification_config
 
-# notification_config = "peppol_integration.notifications.get_notification_config"
+# notification_config = "peppol_connect.notifications.get_notification_config"
 
 # Permissions
 # -----------
@@ -133,60 +133,55 @@ app_license = "gpl-3.0"
 # ---------------
 # Hook on document methods and events
 
-# doc_events = {
-# 	"*": {
-# 		"on_update": "method",
-# 		"on_cancel": "method",
-# 		"on_trash": "method"
-# 	}
-# }
+doc_events = {
+	"Sales Invoice": {
+		"validate": "peppol_connect.handlers.outbound_handler.validate_peppol_fields",
+		"on_submit": "peppol_connect.handlers.outbound_handler.on_invoice_submit",
+		"on_cancel": "peppol_connect.handlers.outbound_handler.on_invoice_cancel"
+	}
+}
 
 # Scheduled Tasks
 # ---------------
 
-# scheduler_events = {
-# 	"all": [
-# 		"peppol_integration.tasks.all"
-# 	],
-# 	"daily": [
-# 		"peppol_integration.tasks.daily"
-# 	],
-# 	"hourly": [
-# 		"peppol_integration.tasks.hourly"
-# 	],
-# 	"weekly": [
-# 		"peppol_integration.tasks.weekly"
-# 	],
-# 	"monthly": [
-# 		"peppol_integration.tasks.monthly"
-# 	],
-# }
+scheduler_events = {
+	"cron": {
+		# Process send queue every 5 minutes
+		"*/5 * * * *": [
+			"peppol_connect.tasks.send_documents.process_outbound_queue"
+		],
+		# Check document status every 15 minutes
+		"*/15 * * * *": [
+			"peppol_connect.tasks.check_status.check_document_statuses"
+		]
+	}
+}
 
 # Testing
 # -------
 
-# before_tests = "peppol_integration.install.before_tests"
+# before_tests = "peppol_connect.install.before_tests"
 
 # Extend DocType Class
 # ------------------------------
 #
 # Specify custom mixins to extend the standard doctype controller.
 # extend_doctype_class = {
-# 	"Task": "peppol_integration.custom.task.CustomTaskMixin"
+# 	"Task": "peppol_connect.custom.task.CustomTaskMixin"
 # }
 
 # Overriding Methods
 # ------------------------------
 #
 # override_whitelisted_methods = {
-# 	"frappe.desk.doctype.event.event.get_events": "peppol_integration.event.get_events"
+# 	"frappe.desk.doctype.event.event.get_events": "peppol_connect.event.get_events"
 # }
 #
 # each overriding function accepts a `data` argument;
 # generated from the base implementation of the doctype dashboard,
 # along with any modifications made in other Frappe apps
 # override_doctype_dashboards = {
-# 	"Task": "peppol_integration.task.get_dashboard_data"
+# 	"Task": "peppol_connect.task.get_dashboard_data"
 # }
 
 # exempt linked doctypes from being automatically cancelled
@@ -200,12 +195,12 @@ app_license = "gpl-3.0"
 
 # Request Events
 # ----------------
-# before_request = ["peppol_integration.utils.before_request"]
-# after_request = ["peppol_integration.utils.after_request"]
+# before_request = ["peppol_connect.utils.before_request"]
+# after_request = ["peppol_connect.utils.after_request"]
 # Job Events
 # ----------
-# before_job = ["peppol_integration.utils.before_job"]
-# after_job = ["peppol_integration.utils.after_job"]
+# before_job = ["peppol_connect.utils.before_job"]
+# after_job = ["peppol_connect.utils.after_job"]
 
 # User Data Protection
 # --------------------
@@ -235,7 +230,7 @@ app_license = "gpl-3.0"
 # --------------------------------
 
 # auth_hooks = [
-# 	"peppol_integration.auth.validate"
+# 	"peppol_connect.auth.validate"
 # ]
 
 # Automatically update python controller files with type annotations for this app.

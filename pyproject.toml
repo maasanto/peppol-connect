@@ -1,5 +1,5 @@
 [project]
-name = "peppol_integration"
+name = "peppol_connect"
 authors = [
     { name = "Antoine Maas", email = "antoine.maas@amingenierie-opensource.fr"}
 ]

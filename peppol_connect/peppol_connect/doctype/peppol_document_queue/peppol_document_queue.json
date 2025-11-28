@@ -198,7 +198,7 @@
  "links": [],
  "modified": "2025-10-21 13:49:56.931587",
  "modified_by": "Administrator",
- "module": "Peppol Integration",
+ "module": "Peppol Connect",
  "name": "Peppol Document Queue",
  "owner": "Administrator",
  "permissions": [

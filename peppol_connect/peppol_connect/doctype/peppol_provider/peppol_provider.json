@@ -36,11 +36,12 @@
    "reqd": 1
   },
   {
-   "description": "Internal code name (e.g., 'recommand', 'einvoice_be')",
+   "description": "Select from supported providers",
    "fieldname": "provider_code",
-   "fieldtype": "Data",
+   "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Provider Code",
+   "options": "recommand",
    "reqd": 1,
    "unique": 1
   },
@@ -143,7 +144,7 @@
  "links": [],
  "modified": "2025-10-21 13:47:38.960150",
  "modified_by": "Administrator",
- "module": "Peppol Integration",
+ "module": "Peppol Connect",
  "name": "Peppol Provider",
  "naming_rule": "By fieldname",
  "owner": "Administrator",

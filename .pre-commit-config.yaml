@@ -8,7 +8,7 @@ repos:
     rev: v5.0.0
     hooks:
       - id: trailing-whitespace
-        files: "peppol_integration.*"
+        files: "peppol_connect.*"
         exclude: ".*json$|.*txt$|.*csv|.*md|.*svg"
       - id: check-merge-conflict
       - id: check-ast
@@ -38,11 +38,11 @@ repos:
         # Ignore any files that might contain jinja / bundles
         exclude: |
             (?x)^(
-                peppol_integration/public/dist/.*|
+                peppol_connect/public/dist/.*|
                 .*node_modules.*|
                 .*boilerplate.*|
-                peppol_integration/templates/includes/.*|
-                peppol_integration/public/js/lib/.*
+                peppol_connect/templates/includes/.*|
+                peppol_connect/public/js/lib/.*
             )$
 
 
@@ -55,12 +55,12 @@ repos:
         # Ignore any files that might contain jinja / bundles
         exclude: |
             (?x)^(
-                peppol_integration/public/dist/.*|
+                peppol_connect/public/dist/.*|
                 cypress/.*|
                 .*node_modules.*|
                 .*boilerplate.*|
-                peppol_integration/templates/includes/.*|
-                peppol_integration/public/js/lib/.*
+                peppol_connect/templates/includes/.*|
+                peppol_connect/public/js/lib/.*
             )$
 
 ci:
