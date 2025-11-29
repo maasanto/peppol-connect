@@ -150,11 +150,36 @@ def process_transmission(transmission_name):
 		frappe.db.commit()
 
 	except Exception as e:
+		# Get retry settings
+		settings = frappe.get_single("E Invoice Settings")
+		retry_enabled = settings.get("peppol_retry_failed_sends", 0)
+		max_retries = settings.get("peppol_max_retry_count", 3)
+		retry_delay_minutes = settings.get("peppol_retry_delay_minutes", 60)
+
 		# Update transmission with error
 		transmission.status = "Failed"
 		transmission.failed_at = now_datetime()
 		transmission.error_message = str(e)
 		transmission.retry_count = (transmission.retry_count or 0) + 1
+
+		# Calculate next retry time if retries are enabled and we haven't exceeded max retries
+		if retry_enabled and transmission.retry_count < max_retries:
+			from frappe.utils import add_to_date
+			transmission.next_retry_time = add_to_date(
+				now_datetime(),
+				minutes=retry_delay_minutes
+			)
+			frappe.logger().info(
+				f"Transmission {transmission.name} will be retried at {transmission.next_retry_time} "
+				f"(attempt {transmission.retry_count + 1}/{max_retries})"
+			)
+		else:
+			transmission.next_retry_time = None
+			if transmission.retry_count >= max_retries:
+				frappe.logger().warning(
+					f"Transmission {transmission.name} exceeded max retries ({max_retries})"
+				)
+
 		transmission.save(ignore_permissions=True)
 
 		# Update invoice

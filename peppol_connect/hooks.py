@@ -149,6 +149,10 @@ scheduler_events = {
 		# Check document status every 15 minutes
 		"*/15 * * * *": [
 			"peppol_connect.api.check_status.check_pending_transmissions"
+		],
+		# Retry failed transmissions every 30 minutes
+		"*/30 * * * *": [
+			"peppol_connect.api.retry.retry_failed_transmissions"
 		]
 	}
 }
