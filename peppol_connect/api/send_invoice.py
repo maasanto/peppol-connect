@@ -116,18 +116,24 @@ def process_transmission(transmission_name):
 			document_type=transmission.document_type
 		)
 
+		# Store API request details for debugging/audit
+		import json
+		if result.get("api_endpoint"):
+			transmission.api_endpoint = result.get("api_endpoint")
+		if result.get("request_payload"):
+			# Store payload without the full XML document
+			# This prevents HTML entity encoding issues and reduces duplication
+			payload_for_storage = result.get("request_payload").copy()
+			if "document" in payload_for_storage:
+				xml_preview = payload_for_storage["document"][:200] if payload_for_storage["document"] else ""
+				payload_for_storage["document"] = f"<XML content stored in ubl_xml field> (preview: {xml_preview}...)"
+			transmission.request_payload = json.dumps(payload_for_storage, indent=2)
+
 		# Update transmission
 		transmission.provider_document_id = result.get("provider_document_id")
 		transmission.status = "Sent"
 		transmission.sent_at = now_datetime()
 		transmission.error_message = None
-
-		# Store API request details for debugging/audit
-		if result.get("api_endpoint"):
-			transmission.api_endpoint = result.get("api_endpoint")
-		if result.get("request_payload"):
-			import json
-			transmission.request_payload = json.dumps(result.get("request_payload"), indent=2)
 
 		transmission.save(ignore_permissions=True)
 

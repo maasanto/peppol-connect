@@ -149,14 +149,16 @@
    "fieldname": "api_endpoint",
    "fieldtype": "Data",
    "label": "API Endpoint",
-   "read_only": 1
+   "hidden": 0,
+   "print_hide": 1
   },
   {
    "description": "Request payload sent to provider (JSON)",
    "fieldname": "request_payload",
    "fieldtype": "Long Text",
    "label": "Request Payload",
-   "read_only": 1
+   "hidden": 0,
+   "print_hide": 1
   },
   {
    "collapsible": 1,
