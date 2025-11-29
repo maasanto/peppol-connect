@@ -65,27 +65,23 @@ def get_peppol_ids(invoice):
 
 	# Get sender ID from Company
 	company = frappe.get_doc("Company", invoice.company)
-	if not company.get("peppol_enabled"):
-		frappe.throw(_("Company {0} is not enabled for Peppol").format(company.name))
 
-	if not company.get("peppol_scheme") or not company.get("peppol_participant_id"):
+	if not company.get("eas") or not company.get("tax_id"):
 		frappe.throw(
-			_("Company {0} is missing Peppol Scheme or Participant ID").format(company.name)
+			_("Company {0} is missing EAS (Endpoint Scheme) or Tax ID").format(company.name)
 		)
 
-	sender_id = f"{company.peppol_scheme}:{company.peppol_participant_id}"
+	sender_id = f"{company.eas}:{company.tax_id}"
 
 	# Get recipient ID from Customer
 	customer = frappe.get_doc("Customer", invoice.customer)
-	if not customer.get("peppol_enabled"):
-		frappe.throw(_("Customer {0} is not enabled for Peppol").format(customer.name))
 
-	if not customer.get("peppol_scheme") or not customer.get("peppol_participant_id"):
+	if not customer.get("eas") or not customer.get("tax_id"):
 		frappe.throw(
-			_("Customer {0} is missing Peppol Scheme or Participant ID").format(customer.name)
+			_("Customer {0} is missing EAS (Endpoint Scheme) or Tax ID").format(customer.name)
 		)
 
-	recipient_id = f"{customer.peppol_scheme}:{customer.peppol_participant_id}"
+	recipient_id = f"{customer.eas}:{customer.tax_id}"
 
 	return {
 		"sender_id": sender_id,

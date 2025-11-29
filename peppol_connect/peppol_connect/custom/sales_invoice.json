@@ -1,5 +1,6 @@
 {
   "sync_on_migrate": true,
+  "doctype": "Sales Invoice",
   "custom_fields": [
     {
       "dt": "Sales Invoice",
@@ -21,10 +22,10 @@
     },
     {
       "dt": "Sales Invoice",
-      "fieldname": "peppol_queue_link",
+      "fieldname": "peppol_transmission_id",
       "fieldtype": "Link",
-      "options": "Peppol Document Queue",
-      "label": "Peppol Queue",
+      "options": "Peppol Transmission",
+      "label": "Peppol Transmission",
       "read_only": 1,
       "insert_after": "peppol_status"
     },
@@ -32,7 +33,7 @@
       "dt": "Sales Invoice",
       "fieldname": "peppol_column_break_1",
       "fieldtype": "Column Break",
-      "insert_after": "peppol_queue_link"
+      "insert_after": "peppol_transmission_id"
     },
     {
       "dt": "Sales Invoice",
@@ -66,5 +67,6 @@
       "read_only": 1,
       "insert_after": "peppol_delivered_date"
     }
-  ]
+  ],
+  "property_setters": []
 }
