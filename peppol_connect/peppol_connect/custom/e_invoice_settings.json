@@ -1,6 +1,6 @@
 {
   "sync_on_migrate": true,
-  "doctype": "E invoice Settings",
+  "doctype": "E Invoice Settings",
   "custom_fields": [
     {
       "dt": "E Invoice Settings",
