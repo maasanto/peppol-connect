@@ -46,7 +46,8 @@ def send_to_peppol(sales_invoice_name):
 		# Get UBL XML from eu_einvoice (already validated)
 		from peppol_connect.utils.peppol_utils import get_peppol_ids
 
-		ubl_xml = get_einvoice(invoice)
+		# get_einvoice returns bytes, decode to string for transmission
+		ubl_xml = get_einvoice(invoice).decode('utf-8')
 		peppol_ids = get_peppol_ids(invoice)
 
 		# Create transmission record
@@ -110,9 +111,8 @@ def process_transmission(transmission_name):
 		# Get provider
 		provider = get_provider_instance(transmission.provider)
 
-		# Send document
 		result = provider.send_document(
-			ubl_xml=transmission.ubl_xml,
+			ubl_xml=get_einvoice(transmission.reference_name).decode('utf-8'),
 			recipient_peppol_id=transmission.recipient_peppol_id,
 			document_type=transmission.document_type
 		)
