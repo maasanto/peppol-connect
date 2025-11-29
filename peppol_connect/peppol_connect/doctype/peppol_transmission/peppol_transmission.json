@@ -1,6 +1,6 @@
 {
  "actions": [],
- "creation": "2025-10-21 13:49:56.931587",
+ "creation": "2025-11-29 19:15:50.989060",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
@@ -38,49 +38,234 @@
   "last_status_check"
  ],
  "fields": [
-  {"default": "Sales Invoice", "fieldname": "reference_doctype", "fieldtype": "Link", "in_list_view": 1, "label": "Reference DocType", "options": "DocType", "reqd": 1},
-  {"fieldname": "reference_name", "fieldtype": "Dynamic Link", "in_list_view": 1, "label": "Reference Name", "options": "reference_doctype", "reqd": 1},
-  {"fieldname": "column_break_1", "fieldtype": "Column Break"},
-  {"default": "Outbound", "fieldname": "direction", "fieldtype": "Select", "label": "Direction", "options": "Outbound\nInbound", "reqd": 1},
-  {"default": "Queued", "fieldname": "status", "fieldtype": "Select", "in_list_view": 1, "in_standard_filter": 1, "label": "Status", "options": "Queued\nSending\nSent\nDelivered\nFailed\nCancelled", "reqd": 1},
-  {"fieldname": "section_break_2", "fieldtype": "Section Break", "label": "Provider Information"},
-  {"fieldname": "provider", "fieldtype": "Link", "label": "Provider", "options": "Peppol Provider Settings"},
-  {"description": "Document ID assigned by the provider", "fieldname": "provider_document_id", "fieldtype": "Data", "label": "Provider Document ID", "read_only": 1},
-  {"fieldname": "column_break_3", "fieldtype": "Column Break"},
-  {"description": "Sender's Peppol ID (format: scheme:id)", "fieldname": "sender_peppol_id", "fieldtype": "Data", "label": "Sender Peppol ID"},
-  {"description": "Recipient's Peppol ID (format: scheme:id)", "fieldname": "recipient_peppol_id", "fieldtype": "Data", "label": "Recipient Peppol ID"},
-  {"default": "invoice", "fieldname": "document_type", "fieldtype": "Select", "label": "Document Type", "options": "invoice\ncredit_note\norder\norder_response"},
-  {"collapsible": 1, "fieldname": "section_break_4", "fieldtype": "Section Break", "label": "Document Data"},
-  {"description": "UBL XML document from eu_einvoice", "fieldname": "ubl_xml", "fieldtype": "Long Text", "label": "UBL XML"},
-  {"description": "Raw webhook data from provider", "fieldname": "webhook_data", "fieldtype": "Long Text", "label": "Webhook Data", "read_only": 1},
-  {"collapsible": 1, "fieldname": "section_break_api_details", "fieldtype": "Section Break", "label": "API Request Details"},
-  {"description": "API endpoint used for transmission", "fieldname": "api_endpoint", "fieldtype": "Data", "label": "API Endpoint", "read_only": 1},
-  {"description": "Request payload sent to provider (JSON)", "fieldname": "request_payload", "fieldtype": "Long Text", "label": "Request Payload", "read_only": 1},
-  {"collapsible": 1, "fieldname": "section_break_5", "fieldtype": "Section Break", "label": "Error & Retry Information"},
-  {"fieldname": "error_message", "fieldtype": "Text", "label": "Error Message", "read_only": 1},
-  {"default": "0", "fieldname": "retry_count", "fieldtype": "Int", "label": "Retry Count", "read_only": 1},
-  {"fieldname": "column_break_6", "fieldtype": "Column Break"},
-  {"fieldname": "next_retry_time", "fieldtype": "Datetime", "label": "Next Retry Time", "read_only": 1},
-  {"fieldname": "section_break_7", "fieldtype": "Section Break", "label": "Timestamps"},
-  {"fieldname": "created_at", "fieldtype": "Datetime", "label": "Created At", "read_only": 1},
-  {"fieldname": "queued_at", "fieldtype": "Datetime", "label": "Queued At", "read_only": 1},
-  {"fieldname": "sent_at", "fieldtype": "Datetime", "label": "Sent At", "read_only": 1},
-  {"fieldname": "column_break_8", "fieldtype": "Column Break"},
-  {"fieldname": "delivered_at", "fieldtype": "Datetime", "label": "Delivered At", "read_only": 1},
-  {"fieldname": "failed_at", "fieldtype": "Datetime", "label": "Failed At", "read_only": 1},
-  {"fieldname": "last_status_check", "fieldtype": "Datetime", "label": "Last Status Check", "read_only": 1}
+  {
+   "default": "Sales Invoice",
+   "fieldname": "reference_doctype",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Reference DocType",
+   "options": "DocType",
+   "reqd": 1
+  },
+  {
+   "fieldname": "reference_name",
+   "fieldtype": "Dynamic Link",
+   "in_list_view": 1,
+   "label": "Reference Name",
+   "options": "reference_doctype",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Outbound",
+   "fieldname": "direction",
+   "fieldtype": "Select",
+   "label": "Direction",
+   "options": "Outbound\nInbound",
+   "reqd": 1
+  },
+  {
+   "default": "Queued",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Status",
+   "options": "Queued\nSending\nSent\nDelivered\nFailed\nCancelled",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_2",
+   "fieldtype": "Section Break",
+   "label": "Provider Information"
+  },
+  {
+   "fieldname": "provider",
+   "fieldtype": "Link",
+   "label": "Provider",
+   "options": "Peppol Provider Settings"
+  },
+  {
+   "description": "Document ID assigned by the provider",
+   "fieldname": "provider_document_id",
+   "fieldtype": "Data",
+   "label": "Provider Document ID",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "Sender's Peppol ID (format: scheme:id)",
+   "fieldname": "sender_peppol_id",
+   "fieldtype": "Data",
+   "label": "Sender Peppol ID"
+  },
+  {
+   "description": "Recipient's Peppol ID (format: scheme:id)",
+   "fieldname": "recipient_peppol_id",
+   "fieldtype": "Data",
+   "label": "Recipient Peppol ID"
+  },
+  {
+   "default": "invoice",
+   "fieldname": "document_type",
+   "fieldtype": "Select",
+   "label": "Document Type",
+   "options": "invoice\ncredit_note\norder\norder_response"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "section_break_4",
+   "fieldtype": "Section Break",
+   "label": "Document Data"
+  },
+  {
+   "description": "UBL XML document from eu_einvoice",
+   "fieldname": "ubl_xml",
+   "fieldtype": "Long Text",
+   "label": "UBL XML"
+  },
+  {
+   "description": "Raw webhook data from provider",
+   "fieldname": "webhook_data",
+   "fieldtype": "Long Text",
+   "label": "Webhook Data",
+   "read_only": 1
+  },
+  {
+   "collapsible": 1,
+   "configuration": "{}",
+   "fieldname": "section_break_api_details",
+   "fieldtype": "Section Break",
+   "label": "API Request Details"
+  },
+  {
+   "description": "API endpoint used for transmission",
+   "fieldname": "api_endpoint",
+   "fieldtype": "Data",
+   "label": "API Endpoint",
+   "read_only": 1
+  },
+  {
+   "description": "Request payload sent to provider (JSON)",
+   "fieldname": "request_payload",
+   "fieldtype": "Long Text",
+   "label": "Request Payload",
+   "read_only": 1
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "section_break_5",
+   "fieldtype": "Section Break",
+   "label": "Error & Retry Information"
+  },
+  {
+   "fieldname": "error_message",
+   "fieldtype": "Text",
+   "label": "Error Message",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "retry_count",
+   "fieldtype": "Int",
+   "label": "Retry Count",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_6",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "next_retry_time",
+   "fieldtype": "Datetime",
+   "label": "Next Retry Time",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_7",
+   "fieldtype": "Section Break",
+   "label": "Timestamps"
+  },
+  {
+   "fieldname": "created_at",
+   "fieldtype": "Datetime",
+   "label": "Created At",
+   "read_only": 1
+  },
+  {
+   "fieldname": "queued_at",
+   "fieldtype": "Datetime",
+   "label": "Queued At",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sent_at",
+   "fieldtype": "Datetime",
+   "label": "Sent At",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_8",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "delivered_at",
+   "fieldtype": "Datetime",
+   "label": "Delivered At",
+   "read_only": 1
+  },
+  {
+   "fieldname": "failed_at",
+   "fieldtype": "Datetime",
+   "label": "Failed At",
+   "read_only": 1
+  },
+  {
+   "fieldname": "last_status_check",
+   "fieldtype": "Datetime",
+   "label": "Last Status Check",
+   "read_only": 1
+  }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-11-28 19:10:00.000000",
+ "modified": "2025-11-29 19:19:59.143112",
  "modified_by": "Administrator",
  "module": "Peppol Connect",
  "name": "Peppol Transmission",
  "owner": "Administrator",
  "permissions": [
-  {"create": 1, "delete": 1, "email": 1, "export": 1, "print": 1, "read": 1, "report": 1, "role": "System Manager", "share": 1, "write": 1},
-  {"email": 1, "export": 1, "print": 1, "read": 1, "report": 1, "role": "Accounts Manager", "share": 1},
-  {"read": 1, "role": "Accounts User"}
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts Manager",
+   "share": 1
+  },
+  {
+   "read": 1,
+   "role": "Accounts User"
+  }
  ],
  "row_format": "Dynamic",
  "sort_field": "modified",
