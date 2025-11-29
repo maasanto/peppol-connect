@@ -3,8 +3,6 @@
 import frappe
 import requests
 from requests.auth import HTTPBasicAuth
-import base64
-
 from peppol_connect.providers.base_provider import BasePeppolProvider
 
 
@@ -106,9 +104,6 @@ class RecommandProvider(BasePeppolProvider):
 		if not self.company_id:
 			raise ValueError("Company ID is required for sending documents")
 
-		# Base64 encode the UBL XML
-		ubl_base64 = base64.b64encode(ubl_xml.encode('utf-8')).decode('utf-8')
-
 		# Recommand API endpoint
 		endpoint = f"/{self.company_id}/sendDocument"
 		full_url = f"{self.get_base_url()}{endpoint}"
@@ -116,7 +111,7 @@ class RecommandProvider(BasePeppolProvider):
 		payload = {
 			"recipient": recipient_peppol_id,
 			"documentType": "xml",
-			"document": ubl_base64,
+			"document": ubl_xml,
 		}
 
 		response = self._make_request("POST", endpoint, data=payload)
