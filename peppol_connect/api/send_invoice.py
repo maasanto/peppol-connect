@@ -43,11 +43,8 @@ def send_to_peppol(sales_invoice_name):
 		frappe.throw(_("No Peppol Provider configured in E Invoice Settings"))
 
 	try:
-		# Get UBL XML from eu_einvoice (already validated)
 		from peppol_connect.utils.peppol_utils import get_peppol_ids
 
-		# get_einvoice returns bytes, decode to string for transmission
-		ubl_xml = get_einvoice(invoice).decode('utf-8')
 		peppol_ids = get_peppol_ids(invoice)
 
 		# Create transmission record
@@ -61,7 +58,6 @@ def send_to_peppol(sales_invoice_name):
 			"recipient_peppol_id": peppol_ids["recipient_id"],
 			"sender_peppol_id": peppol_ids["sender_id"],
 			"document_type": "invoice",
-			"ubl_xml": ubl_xml,
 			"created_at": now_datetime(),
 			"queued_at": now_datetime()
 		})

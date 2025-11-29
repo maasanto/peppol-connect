@@ -1,6 +1,6 @@
 {
  "actions": [],
- "creation": "2025-11-29 19:15:50.989060",
+ "creation": "2025-11-29 19:44:31.964137",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
@@ -18,7 +18,6 @@
   "recipient_peppol_id",
   "document_type",
   "section_break_4",
-  "ubl_xml",
   "webhook_data",
   "section_break_api_details",
   "api_endpoint",
@@ -125,15 +124,9 @@
    "label": "Document Data"
   },
   {
-   "description": "UBL XML document from eu_einvoice",
-   "fieldname": "ubl_xml",
-   "fieldtype": "Long Text",
-   "label": "UBL XML"
-  },
-  {
    "description": "Raw webhook data from provider",
    "fieldname": "webhook_data",
-   "fieldtype": "Long Text",
+   "fieldtype": "JSON",
    "label": "Webhook Data",
    "read_only": 1
   },
@@ -149,16 +142,14 @@
    "fieldname": "api_endpoint",
    "fieldtype": "Data",
    "label": "API Endpoint",
-   "hidden": 0,
-   "print_hide": 1
+   "read_only": 1
   },
   {
    "description": "Request payload sent to provider (JSON)",
    "fieldname": "request_payload",
    "fieldtype": "Long Text",
    "label": "Request Payload",
-   "hidden": 0,
-   "print_hide": 1
+   "read_only": 1
   },
   {
    "collapsible": 1,
@@ -237,7 +228,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-11-29 19:19:59.143112",
+ "modified": "2025-11-29 22:45:34.344580",
  "modified_by": "Administrator",
  "module": "Peppol Connect",
  "name": "Peppol Transmission",
