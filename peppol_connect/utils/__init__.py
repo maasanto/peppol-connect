@@ -1,1 +1,1 @@
-"""Utility functions for Peppol Connect"""
+# Peppol Connect Utils

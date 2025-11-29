@@ -1,0 +1,84 @@
+{
+  "sync_on_migrate": true,
+  "custom_fields": [
+    {
+      "dt": "E Invoice Settings",
+      "fieldname": "peppol_provider_settings_tab",
+      "fieldtype": "Tab Break",
+      "label": "Peppol Provider Settings",
+      "insert_after": "error_action_on_submit"
+    },
+    {
+      "dt": "E Invoice Settings",
+      "fieldname": "peppol_enabled",
+      "fieldtype": "Check",
+      "label": "Enable Peppol Connect",
+      "default": "0",
+      "insert_after": "peppol_provider_settings_tab"
+    },
+    {
+      "dt": "E Invoice Settings",
+      "fieldname": "peppol_provider",
+      "fieldtype": "Link",
+      "options": "Peppol Provider Settings",
+      "label": "Default Peppol Provider",
+      "insert_after": "peppol_enabled",
+      "depends_on": "eval:doc.peppol_enabled"
+    },
+    {
+      "dt": "E Invoice Settings",
+      "fieldname": "peppol_column_break_1",
+      "fieldtype": "Column Break",
+      "insert_after": "peppol_provider"
+    },
+    {
+      "dt": "E Invoice Settings",
+      "fieldname": "peppol_auto_send",
+      "fieldtype": "Check",
+      "label": "Auto Send on Submit",
+      "default": "0",
+      "insert_after": "peppol_column_break_1",
+      "depends_on": "eval:doc.peppol_enabled"
+    },
+    {
+      "dt": "E Invoice Settings",
+      "fieldname": "peppol_section_retry",
+      "fieldtype": "Section Break",
+      "label": "Retry Settings",
+      "insert_after": "peppol_auto_send"
+    },
+    {
+      "dt": "E Invoice Settings",
+      "fieldname": "peppol_retry_failed_sends",
+      "fieldtype": "Check",
+      "label": "Retry Failed Sends",
+      "default": "1",
+      "insert_after": "peppol_section_retry",
+      "depends_on": "eval:doc.peppol_enabled"
+    },
+    {
+      "dt": "E Invoice Settings",
+      "fieldname": "peppol_max_retry_count",
+      "fieldtype": "Int",
+      "label": "Max Retry Count",
+      "default": "3",
+      "insert_after": "peppol_retry_failed_sends",
+      "depends_on": "eval:doc.peppol_retry_failed_sends"
+    },
+    {
+      "dt": "E Invoice Settings",
+      "fieldname": "peppol_column_break_2",
+      "fieldtype": "Column Break",
+      "insert_after": "peppol_max_retry_count"
+    },
+    {
+      "dt": "E Invoice Settings",
+      "fieldname": "peppol_retry_delay_minutes",
+      "fieldtype": "Int",
+      "label": "Retry Delay (Minutes)",
+      "default": "60",
+      "insert_after": "peppol_column_break_2",
+      "depends_on": "eval:doc.peppol_retry_failed_sends"
+    }
+  ]
+}

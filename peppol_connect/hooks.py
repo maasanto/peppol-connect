@@ -135,9 +135,7 @@ app_license = "gpl-3.0"
 
 doc_events = {
 	"Sales Invoice": {
-		"validate": "peppol_connect.handlers.outbound_handler.validate_peppol_fields",
-		"on_submit": "peppol_connect.handlers.outbound_handler.on_invoice_submit",
-		"on_cancel": "peppol_connect.handlers.outbound_handler.on_invoice_cancel"
+		"on_submit": "peppol_connect.api.send_invoice.auto_send_on_submit"
 	}
 }
 
@@ -146,16 +144,22 @@ doc_events = {
 
 scheduler_events = {
 	"cron": {
-		# Process send queue every 5 minutes
-		"*/5 * * * *": [
-			"peppol_connect.tasks.send_documents.process_outbound_queue"
-		],
 		# Check document status every 15 minutes
 		"*/15 * * * *": [
-			"peppol_connect.tasks.check_status.check_document_statuses"
+			"peppol_connect.api.check_status.check_pending_transmissions"
 		]
 	}
 }
+
+# Website Routes
+# --------------
+
+website_route_rules = [
+	{
+		"from_route": "/api/peppol/webhook/recommand",
+		"to_route": "peppol_connect.api.webhooks.recommand_webhook"
+	}
+]
 
 # Testing
 # -------

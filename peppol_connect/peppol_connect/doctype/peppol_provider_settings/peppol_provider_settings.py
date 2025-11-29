@@ -5,13 +5,13 @@ import frappe
 from frappe.model.document import Document
 
 
-class PeppolProvider(Document):
+class PeppolProviderSettings(Document):
 	def test_connection(self):
 		"""Test the API connection using the provider adapter"""
-		from peppol_connect.providers import get_provider_instance
+		from peppol_connect.providers.provider_factory import get_provider_instance
 
 		try:
-			provider = get_provider_instance(self.provider_code)
+			provider = get_provider_instance(self.name)
 			result = provider.test_connection()
 
 			if result.get("success"):
@@ -26,5 +26,5 @@ class PeppolProvider(Document):
 
 		except Exception as e:
 			frappe.msgprint(f"Connection test failed: {str(e)}", indicator="red")
-			frappe.log_error(f"Provider connection test failed: {str(e)}", "Peppol Provider")
+			frappe.log_error(f"Provider connection test failed: {str(e)}", "Peppol Provider Settings")
 			return {"success": False, "error": str(e)}

@@ -145,7 +145,7 @@
  "modified": "2025-10-21 13:47:38.960150",
  "modified_by": "Administrator",
  "module": "Peppol Connect",
- "name": "Peppol Provider",
+ "name": "Peppol Provider Settings",
  "naming_rule": "By fieldname",
  "owner": "Administrator",
  "permissions": [
