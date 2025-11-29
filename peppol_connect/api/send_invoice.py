@@ -121,6 +121,14 @@ def process_transmission(transmission_name):
 		transmission.status = "Sent"
 		transmission.sent_at = now_datetime()
 		transmission.error_message = None
+
+		# Store API request details for debugging/audit
+		if result.get("api_endpoint"):
+			transmission.api_endpoint = result.get("api_endpoint")
+		if result.get("request_payload"):
+			import json
+			transmission.request_payload = json.dumps(result.get("request_payload"), indent=2)
+
 		transmission.save(ignore_permissions=True)
 
 		# Update invoice
