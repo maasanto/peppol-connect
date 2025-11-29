@@ -3,6 +3,7 @@
 import frappe
 from frappe import _
 from frappe.utils import now_datetime
+from eu_einvoice.european_e_invoice.custom.sales_invoice import get_einvoice
 
 
 @frappe.whitelist()
@@ -43,9 +44,9 @@ def send_to_peppol(sales_invoice_name):
 
 	try:
 		# Get UBL XML from eu_einvoice (already validated)
-		from peppol_connect.utils.peppol_utils import get_ubl_xml, get_peppol_ids
+		from peppol_connect.utils.peppol_utils import get_peppol_ids
 
-		ubl_xml = get_ubl_xml(invoice)
+		ubl_xml = get_einvoice(invoice)
 		peppol_ids = get_peppol_ids(invoice)
 
 		# Create transmission record
@@ -125,8 +126,8 @@ def process_transmission(transmission_name):
 			# This prevents HTML entity encoding issues and reduces duplication
 			payload_for_storage = result.get("request_payload").copy()
 			if "document" in payload_for_storage:
-				xml_preview = payload_for_storage["document"][:200] if payload_for_storage["document"] else ""
-				payload_for_storage["document"] = f"<XML content stored in ubl_xml field> (preview: {xml_preview}...)"
+				# Replace XML with reference to avoid HTML encoding issues in stored JSON
+				payload_for_storage["document"] = "[See 'UBL XML' field for full document content]"
 			transmission.request_payload = json.dumps(payload_for_storage, indent=2)
 
 		# Update transmission

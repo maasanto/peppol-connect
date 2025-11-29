@@ -3,47 +3,6 @@
 import frappe
 from frappe import _
 
-
-def get_ubl_xml(invoice):
-	"""
-	Get UBL XML from Sales Invoice using eu_einvoice app
-
-	The eu_einvoice app is responsible for generating and validating
-	the UBL XML. We simply call its method and trust the output.
-
-	Args:
-		invoice: Sales Invoice document or name
-
-	Returns:
-		str: UBL XML string
-
-	Raises:
-		frappe.ValidationError: If UBL generation fails
-	"""
-	from eu_einvoice.european_e_invoice.custom.sales_invoice import get_einvoice
-
-	if isinstance(invoice, str):
-		invoice_name = invoice
-	else:
-		invoice_name = invoice.name
-
-	try:
-		# get_einvoice returns bytes
-		xml_bytes = get_einvoice(invoice_name)
-
-		# Decode to string
-		ubl_xml = xml_bytes.decode('utf-8')
-
-		return ubl_xml
-
-	except Exception as e:
-		frappe.throw(
-			_("Failed to generate UBL XML for invoice {0}: {1}").format(
-				invoice_name, str(e)
-			)
-		)
-
-
 def get_peppol_address(doc):
 	"""
 	Get Peppol participant ID for a Company or Customer
