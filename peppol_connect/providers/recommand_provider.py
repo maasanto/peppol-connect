@@ -98,7 +98,9 @@ class RecommandProvider(BasePeppolProvider):
 			dict: {
 				"provider_document_id": str,
 				"status": str,
-				"response": dict
+				"response": dict,
+				"api_endpoint": str,
+				"request_payload": dict
 			}
 		"""
 		if not self.company_id:
@@ -108,13 +110,13 @@ class RecommandProvider(BasePeppolProvider):
 		ubl_base64 = base64.b64encode(ubl_xml.encode('utf-8')).decode('utf-8')
 
 		# Recommand API endpoint
-		endpoint = f"/{self.company_id}/documents"
+		endpoint = f"/{self.company_id}/sendDocument"
+		full_url = f"{self.get_base_url()}{endpoint}"
 
 		payload = {
 			"recipient": recipient_peppol_id,
-			"documentType": document_type,
+			"documentType": "xml",
 			"document": ubl_base64,
-			"format": "UBL"
 		}
 
 		response = self._make_request("POST", endpoint, data=payload)
@@ -122,7 +124,9 @@ class RecommandProvider(BasePeppolProvider):
 		return {
 			"provider_document_id": response.get("documentId") or response.get("id"),
 			"status": "Sent",
-			"response": response
+			"response": response,
+			"api_endpoint": full_url,
+			"request_payload": payload
 		}
 
 	def get_document_status(self, document_id):
