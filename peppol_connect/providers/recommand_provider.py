@@ -3,6 +3,7 @@
 import frappe
 import requests
 from requests.auth import HTTPBasicAuth
+import xml.etree.ElementTree as ET
 from peppol_connect.providers.base_provider import BasePeppolProvider
 
 
@@ -25,6 +26,47 @@ class RecommandProvider(BasePeppolProvider):
 		if self.test_mode and self.settings.api_playground_url:
 			return self.settings.api_playground_url
 		return self.api_base_url
+
+	def _extract_doctype_id(self, ubl_xml):
+		"""
+		Extract the Peppol document type ID from UBL XML CustomizationID
+
+		Args:
+			ubl_xml: UBL XML string
+
+		Returns:
+			str: Document type ID (e.g., "urn:oasis:names:specification:ubl:schema:xsd:Invoice-2::Invoice##...")
+		"""
+		try:
+			root = ET.fromstring(ubl_xml)
+
+			# Define namespaces
+			namespaces = {
+				'ubl': 'urn:oasis:names:specification:ubl:schema:xsd:Invoice-2',
+				'cbc': 'urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2'
+			}
+
+			# Try to find CustomizationID which contains the document type specification
+			customization_id = root.find('.//cbc:CustomizationID', namespaces)
+
+			if customization_id is not None and customization_id.text:
+				# The CustomizationID contains the profile info, we need to construct the full doctypeId
+				# Format: {document_type_namespace}::{root_element}##{customization_id}::{ubl_version}
+				root_element = root.tag.split('}')[-1]  # Get element name without namespace
+				namespace = root.tag.split('}')[0].strip('{')  # Get namespace
+
+				# Construct the doctypeId
+				doctype_id = f"{namespace}::{root_element}##{customization_id.text}::2.1"
+				return doctype_id
+
+			# Fallback: use default invoice doctypeId
+			frappe.logger().warning("Could not extract CustomizationID from UBL XML, using default")
+			return "urn:oasis:names:specification:ubl:schema:xsd:Invoice-2::Invoice##urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0::2.1"
+
+		except Exception as e:
+			frappe.logger().error(f"Error extracting doctypeId from UBL XML: {str(e)}")
+			# Return default invoice doctypeId
+			return "urn:oasis:names:specification:ubl:schema:xsd:Invoice-2::Invoice##urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0::2.1"
 
 	def _get_auth(self):
 		"""Get HTTP Basic Auth"""
@@ -108,9 +150,13 @@ class RecommandProvider(BasePeppolProvider):
 		endpoint = f"/{self.company_id}/sendDocument"
 		full_url = f"{self.get_base_url()}{endpoint}"
 
+		# Extract doctypeId from UBL XML CustomizationID
+		doctype_id = self._extract_doctype_id(ubl_xml)
+
 		payload = {
 			"recipient": recipient_peppol_id,
 			"documentType": "xml",
+			"doctypeId": doctype_id,
 			"document": ubl_xml,
 		}
 
