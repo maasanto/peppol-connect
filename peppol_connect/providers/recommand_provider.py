@@ -100,7 +100,17 @@ class RecommandProvider(BasePeppolProvider):
 			)
 
 			response.raise_for_status()
-			return response.json() if response.text else {}
+
+			# Try to parse JSON response
+			if response.text:
+				try:
+					return response.json()
+				except ValueError as json_error:
+					frappe.logger().warning(f"Failed to parse JSON from {endpoint}: {json_error}")
+					frappe.logger().warning(f"Response text: {response.text[:200]}")
+					return {}
+			else:
+				return {}
 
 		except requests.exceptions.RequestException as e:
 			error_msg = f"Recommand API Error: {str(e)}"
@@ -223,4 +233,90 @@ class RecommandProvider(BasePeppolProvider):
 			return {
 				"success": False,
 				"message": f"Connection failed: {str(e)}"
+			}
+
+	def verify_recipient(self, peppol_id):
+		"""
+		Verify if a recipient is reachable on the Peppol network
+
+		Args:
+			peppol_id: Recipient's Peppol ID (format: "scheme:id", e.g., "0208:0888888895")
+
+		Returns:
+			dict: {
+				"reachable": bool,
+				"participant_id": str,
+				"details": dict
+			}
+		"""
+		if not self.company_id:
+			raise ValueError("Company ID is required for verifying recipients")
+
+		# URL encode the peppol_id (replace : with %3A)
+		import urllib.parse
+		encoded_peppol_id = urllib.parse.quote(peppol_id, safe='')
+
+		# Recommand API endpoint for participant verification
+		endpoint = f"/{self.company_id}/participants/{encoded_peppol_id}"
+
+		# Make direct request to get better error handling
+		url = f"{self.get_base_url()}{endpoint}"
+		headers = {
+			"Accept": "application/json"
+		}
+
+		try:
+			import requests
+			response = requests.get(
+				url,
+				auth=self._get_auth(),
+				headers=headers,
+				timeout=30
+			)
+
+			# Log the response for debugging
+			frappe.logger().info(f"Peppol verification for {peppol_id}: Status {response.status_code}")
+			frappe.logger().info(f"Response body: {response.text[:500] if response.text else 'empty'}")
+
+			# 200 = participant found and reachable
+			if response.status_code == 200:
+				try:
+					details = response.json() if response.text else {}
+				except (ValueError, TypeError):
+					details = {"raw_response": response.text[:200] if response.text else ""}
+
+				return {
+					"reachable": True,
+					"participant_id": peppol_id,
+					"details": details
+				}
+
+			# 404 = participant not found
+			elif response.status_code == 404:
+				return {
+					"reachable": False,
+					"participant_id": peppol_id,
+					"details": {"error": "Participant not found in Peppol network"}
+				}
+
+			# Other status codes
+			else:
+				response.raise_for_status()  # Will raise an exception
+				return {
+					"reachable": False,
+					"participant_id": peppol_id,
+					"details": {"error": f"Unexpected status code: {response.status_code}"}
+				}
+
+		except requests.exceptions.RequestException as e:
+			error_msg = str(e)
+			frappe.log_error(
+				f"Error verifying Peppol recipient {peppol_id}: {error_msg}",
+				"Peppol Recipient Verification Error"
+			)
+			# Return as unreachable rather than throwing
+			return {
+				"reachable": False,
+				"participant_id": peppol_id,
+				"details": {"error": error_msg}
 			}

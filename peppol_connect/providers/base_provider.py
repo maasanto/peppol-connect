@@ -86,6 +86,26 @@ class BasePeppolProvider(ABC):
 		"""
 		pass
 
+	@abstractmethod
+	def verify_recipient(self, peppol_id: str) -> Dict:
+		"""
+		Verify if a recipient is reachable on the Peppol network
+
+		Args:
+			peppol_id: Recipient's Peppol ID (format: "scheme:id")
+
+		Returns:
+			dict: {
+				"reachable": bool,
+				"participant_id": str,
+				"details": dict (optional provider-specific details)
+			}
+
+		Raises:
+			Exception: If verification fails
+		"""
+		pass
+
 	def normalize_status(self, provider_status: str) -> str:
 		"""
 		Normalize provider-specific status to standard status
