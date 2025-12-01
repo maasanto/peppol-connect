@@ -106,6 +106,28 @@ class BasePeppolProvider(ABC):
 		"""
 		pass
 
+	@abstractmethod
+	def verify_document_support(self, peppol_id: str, document_type_id: str) -> Dict:
+		"""
+		Verify if a recipient supports a specific document type
+
+		Args:
+			peppol_id: Recipient's Peppol ID (format: "scheme:id")
+			document_type_id: Peppol document type identifier
+
+		Returns:
+			dict: {
+				"supported": bool,
+				"participant_id": str,
+				"document_type_id": str,
+				"details": dict (optional provider-specific details)
+			}
+
+		Raises:
+			Exception: If verification fails
+		"""
+		pass
+
 	def normalize_status(self, provider_status: str) -> str:
 		"""
 		Normalize provider-specific status to standard status

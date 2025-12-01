@@ -107,8 +107,45 @@ def process_transmission(transmission_name):
 		# Get provider
 		provider = get_provider_instance(transmission.provider)
 
+		# Get settings
+		settings = frappe.get_single("E Invoice Settings")
+		verify_before_send = settings.get("peppol_verify_before_send", 1)
+
+		# Step 1: Verify recipient if enabled
+		if verify_before_send:
+			frappe.logger().info(f"Verifying recipient {transmission.recipient_peppol_id} before sending")
+
+			recipient_result = provider.verify_recipient(transmission.recipient_peppol_id)
+
+			if not recipient_result.get("reachable"):
+				error_msg = recipient_result.get("details", {}).get("error", "Recipient not found in Peppol network")
+				raise Exception(f"Recipient verification failed: {error_msg}")
+
+			frappe.logger().info(f"Recipient {transmission.recipient_peppol_id} is reachable")
+
+			# Step 2: Verify document type support
+			# Get the UBL XML to extract document type ID
+			ubl_xml = get_einvoice(transmission.reference_name).decode('utf-8')
+			doctype_id = provider._extract_doctype_id(ubl_xml)
+
+			frappe.logger().info(f"Verifying document type support: {doctype_id}")
+
+			support_result = provider.verify_document_support(
+				transmission.recipient_peppol_id,
+				doctype_id
+			)
+
+			if not support_result.get("supported"):
+				error_msg = support_result.get("details", {}).get("error", "Recipient does not support this document type")
+				raise Exception(f"Document type verification failed: {error_msg}")
+
+			frappe.logger().info(f"Recipient supports document type {doctype_id}")
+		else:
+			ubl_xml = get_einvoice(transmission.reference_name).decode('utf-8')
+
+		# Step 3: Send the document
 		result = provider.send_document(
-			ubl_xml=get_einvoice(transmission.reference_name).decode('utf-8'),
+			ubl_xml=ubl_xml,
 			recipient_peppol_id=transmission.recipient_peppol_id,
 			document_type=transmission.document_type
 		)

@@ -43,6 +43,16 @@
     },
     {
       "dt": "E Invoice Settings",
+      "fieldname": "peppol_verify_before_send",
+      "fieldtype": "Check",
+      "label": "Verify Recipient Before Sending",
+      "default": "1",
+      "insert_after": "peppol_auto_send",
+      "depends_on": "eval:doc.peppol_enabled",
+      "description": "Verify recipient is registered in Peppol network and supports the document type before sending"
+    },
+    {
+      "dt": "E Invoice Settings",
       "fieldname": "peppol_section_retry",
       "fieldtype": "Section Break",
       "label": "Retry Settings",

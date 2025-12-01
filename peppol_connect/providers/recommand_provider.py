@@ -320,3 +320,96 @@ class RecommandProvider(BasePeppolProvider):
 				"participant_id": peppol_id,
 				"details": {"error": error_msg}
 			}
+
+	def verify_document_support(self, peppol_id, document_type_id):
+		"""
+		Verify if a recipient supports a specific document type
+
+		Args:
+			peppol_id: Recipient's Peppol ID (format: "scheme:id")
+			document_type_id: Peppol document type identifier
+
+		Returns:
+			dict: {
+				"supported": bool,
+				"participant_id": str,
+				"document_type_id": str,
+				"details": dict
+			}
+		"""
+		if not self.company_id:
+			raise ValueError("Company ID is required for verifying document support")
+
+		# URL encode both peppol_id and document_type_id
+		import urllib.parse
+		encoded_peppol_id = urllib.parse.quote(peppol_id, safe='')
+		encoded_doctype_id = urllib.parse.quote(document_type_id, safe='')
+
+		# Recommand API endpoint for document type verification
+		endpoint = f"/{self.company_id}/participants/{encoded_peppol_id}/documentTypes/{encoded_doctype_id}"
+
+		# Make direct request to get better error handling
+		url = f"{self.get_base_url()}{endpoint}"
+		headers = {
+			"Accept": "application/json"
+		}
+
+		try:
+			import requests
+			response = requests.get(
+				url,
+				auth=self._get_auth(),
+				headers=headers,
+				timeout=30
+			)
+
+			# Log the response for debugging
+			frappe.logger().info(f"Document support verification for {peppol_id}, doctype {document_type_id}: Status {response.status_code}")
+			frappe.logger().info(f"Response body: {response.text[:500] if response.text else 'empty'}")
+
+			# 200 = document type is supported
+			if response.status_code == 200:
+				try:
+					details = response.json() if response.text else {}
+				except (ValueError, TypeError):
+					details = {"raw_response": response.text[:200] if response.text else ""}
+
+				return {
+					"supported": True,
+					"participant_id": peppol_id,
+					"document_type_id": document_type_id,
+					"details": details
+				}
+
+			# 404 = document type not supported or participant not found
+			elif response.status_code == 404:
+				return {
+					"supported": False,
+					"participant_id": peppol_id,
+					"document_type_id": document_type_id,
+					"details": {"error": "Document type not supported by this participant"}
+				}
+
+			# Other status codes
+			else:
+				response.raise_for_status()  # Will raise an exception
+				return {
+					"supported": False,
+					"participant_id": peppol_id,
+					"document_type_id": document_type_id,
+					"details": {"error": f"Unexpected status code: {response.status_code}"}
+				}
+
+		except requests.exceptions.RequestException as e:
+			error_msg = str(e)
+			frappe.log_error(
+				f"Error verifying document support for {peppol_id}: {error_msg}",
+				"Peppol Document Support Verification Error"
+			)
+			# Return as not supported rather than throwing
+			return {
+				"supported": False,
+				"participant_id": peppol_id,
+				"document_type_id": document_type_id,
+				"details": {"error": error_msg}
+			}
